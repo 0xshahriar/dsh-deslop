@@ -3,6 +3,14 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.0.3] - 2026-11-07
+
+### Fixed
+- Release workflow pinned `tag_name: v1.0.1`, so the v1.0.2 tarball was
+  attached to the v1.0.1 release and no v1.0.2 release existed. It now uses
+  `github.ref_name` and auto-generated release notes, so each tag publishes its
+  own release and asset.
+
 ## [1.0.2] - 2026-11-07
 
 ### Documented
