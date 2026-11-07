@@ -71,8 +71,23 @@ jobs:
           grep -q "bin/dsh-deslop.js" /tmp/pack.txt || fail "bin/dsh-deslop.js is missing"
           grep -q "bin/dsh-deslop-exec.js" /tmp/pack.txt || fail "bin/dsh-deslop-exec.js is missing"
 
+      - name: Can we authenticate to npm?
+        id: auth
+        run: |
+          # Publishing needs either a token secret or npm trusted publishing
+          # (OIDC) configured for this repo on npmjs.com. Without either, skip
+          # instead of failing the whole workflow: a red X on every push to
+          # main trains people to ignore CI.
+          if [ -n "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "method=token" >> "$GITHUB_OUTPUT"
+          else
+            echo "method=none" >> "$GITHUB_OUTPUT"
+            echo "::notice title=npm publish skipped::No NPM_TOKEN secret and no trusted publisher configured. Configure one to enable auto-publish - see TROUBLESHOOTING.md."
+          fi
+
       - name: Publish (dry run)
-        if: github.event_name == 'workflow_dispatch' && inputs.dry_run
+        if: |
+          github.event_name == 'workflow_dispatch' && inputs.dry_run && steps.auth.outputs.method != 'none'
         run: npm publish --dry-run --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -80,6 +95,7 @@ jobs:
       - name: Publish
         if: |
           steps.check.outputs.published == 'false' &&
+          steps.auth.outputs.method != 'none' &&
           (github.event_name == 'release' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run))
         run: npm publish --provenance --access public
         env:

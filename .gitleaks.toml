@@ -1,0 +1,37 @@
+# Secret-scanning rules for this repo. Used by the secret-scan workflow and by
+# any local gitleaks run. Keep patterns broad: false positives are cheap,
+# leaked credentials are not.
+
+title = "dsh-deslop secret rules"
+
+[[rules]]
+id = "github-pat-classic"
+description = "GitHub classic personal access token"
+regex = '''ghp_[A-Za-z0-9]{36}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "github-pat-fine-grained"
+description = "GitHub fine-grained personal access token"
+regex = '''github_pat_[A-Za-z0-9_]{20,}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "npm-token"
+description = "npm automation or publish token"
+regex = '''npm_[A-Za-z0-9]{30,}'''
+tags = ["npm", "token"]
+
+[[rules]]
+id = "credentialed-url"
+description = "URL embedding a user and secret"
+regex = '''https?://[^/\s:@]+:[^/\s@]{8,}@[^\s]+'''
+tags = ["url", "credential"]
+
+[allowlist]
+description = "Documentation placeholders"
+regexes = [
+  '''ghp_1a2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R''',
+  '''YOUR_GITHUB_TOKEN''',
+  '''YOUR_TOKEN_HERE''',
+]
