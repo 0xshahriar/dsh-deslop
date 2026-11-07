@@ -42,6 +42,17 @@ test('the zh rules still match Chinese slop (functionality intact)', () => {
   assert.ok(!text.includes('\u8d4b\u80fd'))
 })
 
+// Mirrors the Cordis ctx surface the plugin relies on: `effect` runs the
+// factory immediately (like Cordis does on activation) and register() returns
+// a disposer.
+function makeCtx(registered) {
+  return {
+    commands: { register: (def) => { registered.push(def); return () => {} } },
+    inject: () => {},
+    effect: (fn) => { const dispose = fn(); return () => dispose?.() },
+  }
+}
+
 // ── /deslop slash command handler (imported directly — no host needed) ──
 // The handler is exercised through the engine with the same grammar the
 // command registration parses.
@@ -49,11 +60,7 @@ test('the zh rules still match Chinese slop (functionality intact)', () => {
 test('slash grammar: bare /deslop with no args is a usage error', async () => {
   const { apply } = await import('../lib/index.js')
   const registered = []
-  const fakeCtx = {
-    commands: { register: (def) => registered.push(def) },
-    inject: () => {},
-  }
-  apply(fakeCtx)
+  apply(makeCtx(registered))
   assert.equal(registered.length, 1)
   const cmd = registered[0]
   assert.equal(cmd.name, 'deslop')
@@ -65,7 +72,7 @@ test('slash grammar: bare /deslop with no args is a usage error', async () => {
 test('slash grammar: /deslop <text> returns cleaned text', async () => {
   const { apply } = await import('../lib/index.js')
   const registered = []
-  apply({ commands: { register: (d) => registered.push(d) }, inject: () => {} })
+  apply(makeCtx(registered))
   const cmd = registered[0]
   const r = cmd.handler({ rawInput: 'Great question! It works. Hope this helps!' })
   assert.equal(r.kind, 'success')
@@ -76,7 +83,7 @@ test('slash grammar: /deslop <text> returns cleaned text', async () => {
 test('slash grammar: /deslop -a <text> uses aggressive mode', async () => {
   const { apply } = await import('../lib/index.js')
   const registered = []
-  apply({ commands: { register: (d) => registered.push(d) }, inject: () => {} })
+  apply(makeCtx(registered))
   const cmd = registered[0]
   const soft = cmd.handler({ rawInput: 'basically it works' })
   // normal mode keeps soft slop → reports clean; aggressive removes it
@@ -89,15 +96,26 @@ test('slash grammar: /deslop -a <text> uses aggressive mode', async () => {
 test('slash grammar: /deslop --rules lists all rule ids', async () => {
   const { apply } = await import('../lib/index.js')
   const registered = []
-  apply({ commands: { register: (d) => registered.push(d) }, inject: () => {} })
+  apply(makeCtx(registered))
   const cmd = registered[0]
   const r = cmd.handler({ rawInput: '--rules' })
   assert.ok(r.text.includes('em-dash'))
   assert.ok(r.text.includes('zh-dash'))
 })
 
-test('plugin degrades gracefully when host has no commands service', async () => {
-  const { apply } = await import('../lib/index.js')
-  // No ctx.commands at all — must not throw.
-  assert.doesNotThrow(() => apply({ inject: () => {} }))
+test('plugin declares commands in its inject list', async () => {
+  const { inject } = await import('../lib/index.js')
+  // Cordis reads this export to resolve the service before apply() runs. If it
+  // is missing, reading ctx.commands through the proxy throws and the plugin
+  // fails to start, which is the bug this guards against.
+  assert.ok(Array.isArray(inject), 'inject must be an array')
+  assert.ok(inject.includes('commands'), 'commands must be declared')
+})
+
+test('plugin leaves dshGo as an optional child fiber', async () => {
+  const { inject } = await import('../lib/index.js')
+  // dshGo exists only on dsh-go bridge hosts. Declaring it as required would
+  // keep the plugin inactive everywhere else, so it must stay out of inject and
+  // be attached through ctx.inject([...]) instead.
+  assert.ok(!inject.includes('dshGo'), 'dshGo must not be a required inject')
 })

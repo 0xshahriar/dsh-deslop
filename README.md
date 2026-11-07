@@ -8,7 +8,7 @@ Em-dashes · "Great question!" · "Hope this helps!" · 🚀 decorations · form
 openers and buzzwords — the tells that scream *"a language model wrote this"* —
 cleaned from chat replies, clipboard text, files, and even **live CLI tool output**.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-2563eb?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-2563eb?style=flat-square)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-82%20passing-16a34a?style=flat-square)](#-development)
 [![Rules](https://img.shields.io/badge/rules-50%20built--in-ea580c?style=flat-square)](#-rules)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -56,7 +56,7 @@ npm install -g github:0xshahriar/dsh-deslop
 # Or use it without installing
 npx github:0xshahriar/dsh-deslop --help
 
-# As a DSH plugin (dsh-go app)
+# As a DSH plugin
 dsh plugin --profile web add /path/to/dsh-deslop
 ```
 
@@ -106,18 +106,35 @@ dsh-deslop exec --diff -- <ai-tool>     # see exactly what it stripped
 Line-buffered · ANSI-color-safe · child exit codes propagated · stderr
 untouched by default.
 
-### 3️⃣ In DSH (dsh-go app) — buttons where you need them
+### 3️⃣ As a DSH plugin — slash command everywhere, buttons on dsh-go
 
-| Surface | Action |
-|---------|--------|
-| `/deslop <text>` | slash command — supports `-a`, `-H`, `--rules` |
-| Composer pill | deslop the draft in place |
-| Undo pill | restore the previous draft |
-| Reply long-press | deslop the reply · copy the clean version |
-| Status strip | shows the active strength |
-| Panel | pick the strength (hard-only / normal / aggressive) |
-| `+` tool | clean the clipboard |
-| Session action | export the cleaned reply |
+The plugin layers on whatever the host provides. It never assumes the
+dsh-go phone app.
+
+| Surface | Where it appears | Action |
+|---------|------------------|--------|
+| `/deslop <text>` | **any DSH host** (web, desktop, CLI, ACP) | deslop text — supports `-a`, `-H`, `--rules` |
+| Composer pill | dsh-go app only | deslop the draft in place |
+| Undo pill | dsh-go app only | restore the previous draft |
+| Reply long-press | dsh-go app only | deslop the reply · copy the clean version |
+| Status strip | dsh-go app only | shows the active strength |
+| Panel | dsh-go app only | pick the strength (hard-only / normal / aggressive) |
+| `+` tool | dsh-go app only | clean the clipboard |
+| Session action | dsh-go app only | export the cleaned reply |
+
+**Using it on another app?** The desloping engine (`lib/engine.js`) and the
+rule set (`lib/rules.js`) are plain ESM with no host dependency — import them
+directly from any Node program:
+
+```js
+import { deslop } from "dsh-deslop"
+
+const { text, hits } = deslop("Great question! It works.", { mode: "aggressive" })
+```
+
+`commands` is the only service the plugin requires, so on a host without the
+dsh-go bridge the slash command still registers and every other surface stays
+dormant instead of failing to start.
 
 ---
 

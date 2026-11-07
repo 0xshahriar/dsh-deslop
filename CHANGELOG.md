@@ -3,6 +3,17 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.0.1] - 2026-11-07
+
+### Fixed
+- **Plugin failed to start after installation** (`cannot get property "commands" without inject`). The plugin reads the host's command registry but never declared it, so the Cordis proxy threw on first access. It now exports `inject = ['commands']`. The `dshGo` bridge service is deliberately left out of the list and attached through an optional child fiber, so the plugin still runs on hosts without the dsh-go app.
+- **`/deslop` never appeared.** Registration now runs inside `ctx.effect()`, so Cordis tracks and disposes it with the plugin, and a registration failure is no longer swallowed silently.
+- **CI red on every push.** `node --test tests/` throws `ERR_UNSUPPORTED_DIR_IMPORT` on the tests directory. The npm script and both workflows now use `node --test`, which discovers the files itself.
+- **`private: true` blocked npm installation.** Removed, with `repository`, `bugs`, `homepage`, `keywords` and `publishConfig` added so the package installs from a registry as well as from git.
+
+### Changed
+- README documents which surfaces appear on which host, and how to import the engine directly from another Node app.
+
 ## [1.0.0] - 2026-11-07
 
 First stable release. Fresh start — all history consolidated.

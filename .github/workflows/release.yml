@@ -19,7 +19,7 @@ jobs:
           node-version: 20
 
       - name: Run tests
-        run: node --test tests/
+        run: node --test
 
       - name: Package source tarball
         run: |
@@ -29,19 +29,22 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          name: "v1.0.0 — First stable release"
+          tag_name: v1.0.1
+          name: "v1.0.1 — Startup and CI fixes"
           body: |
-            ## dsh-deslop v1.0.0
+            ## dsh-deslop v1.0.1
 
-            First stable release — remove AI slop from anything.
+            Startup and CI fixes on top of 1.0.0.
 
-            ### Highlights
-            - **50 built-in rules** (EN + ZH) · 3 modes (hard-only / normal / aggressive)
-            - **CLI**: pipes, files, `-i`, `--diff`, `--check`, `--json`
-            - **dsh-deslop exec**: deslop any CLI tool's output live
-            - **DSH plugin**: `/deslop` slash command, pills, undo, panel
-            - 82 tests, zero dependencies
+            ### Fixed
+            - Plugin failed to start (`cannot get property "commands" without inject`) - now declares its required service
+            - `/deslop` slash command now registers and appears
+            - CI red on every push (`ERR_UNSUPPORTED_DIR_IMPORT`) - test discovery fixed
+            - `private: true` removed, so the package installs from a registry too
+
+            ### Works on any DSH host
+            `/deslop` registers wherever a command registry exists. The dsh-go
+            buttons stay dormant elsewhere instead of breaking startup.
 
             **Install:**
             ```sh

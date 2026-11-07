@@ -1,16 +1,37 @@
 {
   "name": "dsh-deslop",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.0.1",
+  "private": false,
   "type": "module",
   "main": "lib/index.js",
-  "description": "Remove AI slop from chat replies, clipboard text, and CLI tool output — slash command + dsh-go plugin + CLI.",
+  "description": "Remove AI slop from chat replies, clipboard text, and CLI tool output. Works as a CLI, a CLI-output wrapper, and a DSH plugin with a /deslop slash command.",
+  "keywords": [
+    "ai-slop",
+    "deslop",
+    "llm",
+    "text-processing",
+    "text-cleanup",
+    "cli",
+    "dsh",
+    "dsh-plugin"
+  ],
   "author": "Md. Shahriar Alam Shaon AKA 0xShahriar",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xshahriar/dsh-deslop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/0xshahriar/dsh-deslop/issues"
+  },
+  "homepage": "https://github.com/0xshahriar/dsh-deslop#readme",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "dsh": ">=0.2.1-rc.2 <0.3.0-0"
@@ -21,7 +42,7 @@
   },
   "files": ["lib", "bin", "README.md", "CHANGELOG.md", "LICENSE"],
   "scripts": {
-    "test": "node --test tests/"
+    "test": "node --test"
   },
   "dshGo": {
     "v": 1,
