@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // dsh-deslop exec — deslop the UI output of CLI tools, live.
 //
 //   dsh-deslop exec -- <command> [args...]        run a tool, deslop its output
@@ -14,7 +15,7 @@ import { spawn } from 'node:child_process'
 import { deslop } from '../lib/engine.js'
 import { loadSettings } from '../lib/settings.js'
 
-const VERSION = '1.1.0'
+const VERSION = '1.1.1'
 
 function usage() {
   console.log(`dsh-deslop exec v${VERSION} — deslop a CLI tool's output, live

@@ -3,6 +3,31 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.1.1] - 2026-11-07
+
+### Fixed
+- **`dsh-deslop-exec` was broken for every npm consumer.** The file had no
+  `#!` line, so npm generated a shell shim and the shell tried to execute the
+  JavaScript comments (`line 1: //: Is a directory`). It now starts with
+  `#!/usr/bin/env node`, and both binaries are tracked as mode `100755`.
+- Chinese text removed from the docs, keeping `lib/rules.js` as the sole
+  exception (its `zh-*` patterns must contain the characters they match).
+
+### Added
+- **`TROUBLESHOOTING.md`** — the errors people actually hit, with causes and
+  fixes: the `inject` startup failure, `bundle:null` on dsh-android, a missing
+  `/deslop`, the exec shim failure, exit codes, over-aggressive rewrites,
+  "nothing was removed", code-block protection, stale app surfaces, and npm
+  version confusion.
+- **`tests/packaging.test.js`** — guards the publishing invariants: every bin
+  has a shebang, bins are `100755`, `cordis.patch.yml` ships, the package is
+  publishable, and every `exports`/`files` entry resolves. 83 → 90 tests.
+- **Auto-publish on repo updates.** `publish.yml` now also runs on pushes to
+  `main`, skips versions already on npm, and verifies the packed tarball
+  carries its DSH patch and both binaries before publishing.
+- README documents npm installation and compares which install forms work on
+  dsh-go versus dsh-android.
+
 ## [1.1.0] - 2026-11-07
 
 ### Added

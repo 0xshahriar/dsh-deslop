@@ -8,7 +8,7 @@ Em-dashes · "Great question!" · "Hope this helps!" · 🚀 decorations · form
 openers and buzzwords — the tells that scream *"a language model wrote this"* —
 cleaned from chat replies, clipboard text, files, and even **live CLI tool output**.
 
-[![Version](https://img.shields.io/badge/version-1.1.0-2563eb?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.1-2563eb?style=flat-square)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-82%20passing-16a34a?style=flat-square)](#-development)
 [![Rules](https://img.shields.io/badge/rules-50%20built--in-ea580c?style=flat-square)](#-rules)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -49,19 +49,37 @@ inspect, disable, and extend.
 
 ## 📦 Install
 
+**From npm (recommended):** [![npm](https://img.shields.io/npm/v/dsh-deslop?style=flat-square&logo=npm)](https://www.npmjs.com/package/dsh-deslop)
+
 ```sh
 # Global CLI
 npm install -g dsh-deslop
 
-# Or use it without installing
+# Or run it without installing
 npx dsh-deslop --help
 
-# Install from GitHub instead (always latest main)
-npm install -g github:0xshahriar/dsh-deslop
+# As a library in a project
+npm install dsh-deslop
+```
 
-# As a DSH plugin
+**As a DSH plugin.** Install by registry name — this is the form that works on
+every host, including dsh-android:
+
+```sh
+dsh plugin --profile web add dsh-deslop
+```
+
+Or point it at a local checkout while developing:
+
+```sh
 dsh plugin --profile web add /path/to/dsh-deslop
 ```
+
+| Install form | Works on dsh-go | Works on dsh-android |
+|---|---|---|
+| `dsh-deslop` (npm name) | ✅ | ✅ |
+| `add /local/path` | ✅ | ✅ |
+| `add https://github.com/...` | ✅ | ❌ see [troubleshooting](TROUBLESHOOTING.md#bundlenull-from-a-github-or-tarball-url) |
 
 > **Installing from a GitHub or tarball URL fails on strict hosts.**
 > `dsh-plugin-manager`'s `inspect()` returns a hardcoded `bundle: null` for git
@@ -217,6 +235,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add a rule.
 | File | Contents |
 |------|----------|
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Fixes for the errors people actually hit |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Adding rules, dev setup, commit style |
 | [SECURITY.md](SECURITY.md) | Supported versions, private disclosure |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards |
