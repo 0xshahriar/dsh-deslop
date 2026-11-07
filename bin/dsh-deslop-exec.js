@@ -14,7 +14,7 @@ import { spawn } from 'node:child_process'
 import { deslop } from '../lib/engine.js'
 import { loadSettings } from '../lib/settings.js'
 
-const VERSION = '1.0.4'
+const VERSION = '1.1.0'
 
 function usage() {
   console.log(`dsh-deslop exec v${VERSION} — deslop a CLI tool's output, live

@@ -13,7 +13,7 @@ import { deslop, summarize, MODES } from '../lib/engine.js'
 import { RULES } from '../lib/rules.js'
 import { loadSettings, saveSettings, SETTINGS_FILE } from '../lib/settings.js'
 
-const VERSION = '1.0.4'
+const VERSION = '1.1.0'
 
 function usage() {
   console.log(`dsh-deslop v${VERSION} — remove AI slop from text
@@ -212,4 +212,7 @@ if (!quiet && !json && !check) {
   const where = inPlace ? '' : diff ? '' : ' (use --stats for details)'
   if (totalHits > 0) process.stderr.write(`dsh-deslop: ${totalHits} fix(es)${where}\n`)
 }
-process.exit(totalHits > 0 ? 1 : 0)
+// Exit 0 whenever the deslop ran successfully: this is a text filter, and a
+// non-zero exit on ordinary input would break `set -e` pipelines and editors.
+// Use --check when a "changed" signal is what you want (it exits 1 on slop).
+process.exit(0)

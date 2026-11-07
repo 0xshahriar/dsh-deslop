@@ -8,7 +8,7 @@ Em-dashes · "Great question!" · "Hope this helps!" · 🚀 decorations · form
 openers and buzzwords — the tells that scream *"a language model wrote this"* —
 cleaned from chat replies, clipboard text, files, and even **live CLI tool output**.
 
-[![Version](https://img.shields.io/badge/version-1.0.4-2563eb?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-2563eb?style=flat-square)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-82%20passing-16a34a?style=flat-square)](#-development)
 [![Rules](https://img.shields.io/badge/rules-50%20built--in-ea580c?style=flat-square)](#-rules)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -51,10 +51,13 @@ inspect, disable, and extend.
 
 ```sh
 # Global CLI
-npm install -g github:0xshahriar/dsh-deslop
+npm install -g dsh-deslop
 
 # Or use it without installing
-npx github:0xshahriar/dsh-deslop --help
+npx dsh-deslop --help
+
+# Install from GitHub instead (always latest main)
+npm install -g github:0xshahriar/dsh-deslop
 
 # As a DSH plugin
 dsh plugin --profile web add /path/to/dsh-deslop
@@ -142,6 +145,9 @@ directly from any Node program:
 
 ```js
 import { deslop } from "dsh-deslop"
+// or import the pieces directly:
+//   import { deslop } from "dsh-deslop/engine"
+//   import { RULES }  from "dsh-deslop/rules"
 
 const { text, hits } = deslop("Great question! It works.", { mode: "aggressive" })
 ```

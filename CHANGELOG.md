@@ -3,6 +3,26 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.1.0] - 2026-11-07
+
+### Added
+- **npm publishing setup.** `publish.yml` publishes on every GitHub release
+  (with `--provenance`), plus a manual dry-run trigger.
+- `exports` map so other programs can import the pieces directly:
+  `dsh-deslop` (plugin + helper exports), `dsh-deslop/engine` (`deslop()`),
+  and `dsh-deslop/rules` (the rule table).
+- `engines.node >= 20` and a pre-publish test gate.
+
+### Fixed
+- **The published package was missing `cordis.patch.yml`.** `dsh.bundle`
+  points at that file, so an npm install would have produced a bundle that DSH
+  could not load. It is now listed in `files`, and the publish workflow fails
+  the build if it ever drops out again.
+- **The CLI exited 1 whenever it changed anything**, which breaks `set -e`
+  pipelines and editor integrations for a tool whose whole job is rewriting
+  text. Ordinary runs now exit 0; `--check` remains the way to ask "is there
+  slop here?" (it exits 1).
+
 ## [1.0.4] - 2026-11-07
 
 ### Fixed

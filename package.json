@@ -1,6 +1,6 @@
 {
   "name": "dsh-deslop",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "private": false,
   "type": "module",
   "main": "lib/index.js",
@@ -31,24 +31,42 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "engines": {
+    "node": ">=20",
     "dsh": ">=0.2.1-rc.2 <0.3.0-0"
   },
   "bin": {
     "dsh-deslop": "./bin/dsh-deslop.js",
     "dsh-deslop-exec": "./bin/dsh-deslop-exec.js"
   },
-  "files": ["lib", "bin", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "lib",
+    "bin",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "npm test",
+    "pack:check": "npm pack --dry-run"
   },
   "dshGo": {
     "v": 1,
     "title": "Deslop",
     "icon": "sparkle",
-    "wants": ["clipboard", "draft", "message"],
+    "wants": [
+      "clipboard",
+      "draft",
+      "message"
+    ],
     "contributes": {
       "composer.actions": [
         {
@@ -75,14 +93,22 @@
         }
       ],
       "composer.strip": [
-        { "id": "deslop-status", "icon": "sparkle", "text": "Deslop" }
+        {
+          "id": "deslop-status",
+          "icon": "sparkle",
+          "text": "Deslop"
+        }
       ],
       "panels": [
         {
           "id": "deslop-panel",
           "title": "Deslop",
           "icon": "sparkle",
-          "placement": ["session.tab", "features", "chat.panel"]
+          "placement": [
+            "session.tab",
+            "features",
+            "chat.panel"
+          ]
         }
       ],
       "composer.tools": [
@@ -106,5 +132,18 @@
         }
       ]
     }
-  }
+  },
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./engine": {
+      "default": "./lib/engine.js"
+    },
+    "./rules": {
+      "default": "./lib/rules.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
 }
