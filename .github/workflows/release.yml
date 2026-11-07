@@ -29,27 +29,22 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.1
-          name: "v1.0.1 — Startup and CI fixes"
+          # Track the pushed tag instead of hardcoding a version, so every
+          # release attaches its own tarball and no asset lands on an older one.
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
           body: |
-            ## dsh-deslop v1.0.1
+            See [CHANGELOG.md](CHANGELOG.md) for what changed in this release.
 
-            Startup and CI fixes on top of 1.0.0.
-
-            ### Fixed
-            - Plugin failed to start (`cannot get property "commands" without inject`) - now declares its required service
-            - `/deslop` slash command now registers and appears
-            - CI red on every push (`ERR_UNSUPPORTED_DIR_IMPORT`) - test discovery fixed
-            - `private: true` removed, so the package installs from a registry too
-
-            ### Works on any DSH host
-            `/deslop` registers wherever a command registry exists. The dsh-go
-            buttons stay dormant elsewhere instead of breaking startup.
-
-            **Install:**
+            **Install**
             ```sh
             npm install -g github:0xshahriar/dsh-deslop
             ```
+
+            > Installing into DSH from a GitHub URL fails on strict hosts
+            > (dsh-android) with `bundle: null`; use a local path or an npm
+            > registry spec instead.
           files: dsh-deslop-*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
