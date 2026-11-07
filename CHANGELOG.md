@@ -3,6 +3,18 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.1.2] - 2026-11-07
+
+### Fixed
+- **CI no longer goes red on every push to `main`.** The publish workflow
+  failed because the `NPM_TOKEN` secret was never configured. It now detects
+  the missing credential, explains what to configure, and skips publishing
+  instead of failing the build.
+
+### Added
+- `.gitleaks.toml` with rules for GitHub PATs, npm tokens, and URLs carrying
+  embedded credentials, plus an allowlist for the placeholders used in docs.
+
 ## [1.1.1] - 2026-11-07
 
 ### Fixed
