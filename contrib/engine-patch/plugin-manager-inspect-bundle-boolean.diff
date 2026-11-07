@@ -1,0 +1,45 @@
+--- /tmp/pm-backup2.js	2026-11-07 20:05:59.681657522 +0600
++++ lib/index.js	2026-11-07 20:06:49.509657525 +0600
+@@ -2487,19 +2487,39 @@
+ 				case "git": return {
+ 					status: "accepted",
+ 					kind: "git",
+-					bundle: null,
++					// The manifest of a remote git spec is not read during
++					// inspection, so whether it declares a bundle is unknown.
++					// Report false rather than null: clients parse this field as
++					// a boolean and reject a null literal.
++					bundle: false,
+ 					registry,
+ 					host: parsed.host
+ 				};
+-				case "tarball":
++				case "tarball": {
+ 					if (parsed.path !== void 0 && !existsSync(parsed.path)) return refused("not-a-package", "the tarball does not exist");
++					// A local tarball carries its manifest, so read it in place and
++					// report the real bundle flag; a remote tarball cannot be read
++					// without fetching, which inspection does not do, so report false.
++					let bundle = false;
++					if (parsed.path !== void 0) {
++						try {
++							const listed = await execa("tar", ["-xOzf", parsed.path, "--wildcards", "*/package.json"], { reject: false, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
++							if (listed.exitCode === 0 && typeof listed.stdout === "string" && listed.stdout.trim() !== "") {
++								const read = JSON.parse(listed.stdout);
++								bundle = typeof read.dsh === "object" && read.dsh !== null && typeof read.dsh.bundle === "object" && read.dsh.bundle !== null;
++							}
++						} catch {
++							bundle = false;
++						}
++					}
+ 					return {
+ 						status: "accepted",
+ 						kind: "tarball",
+-						bundle: null,
++						bundle,
+ 						registry,
+ 						...parsed.host === void 0 ? {} : { host: parsed.host }
+ 					};
++				}
+ 				case "path": {
+ 					if (!existsSync(parsed.path)) return refused("not-a-package", "the path does not exist");
+ 					let read;
