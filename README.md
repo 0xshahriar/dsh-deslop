@@ -8,13 +8,21 @@ Em-dashes · "Great question!" · "Hope this helps!" · 🚀 decorations · form
 openers and buzzwords — the tells that scream *"a language model wrote this"* —
 cleaned from chat replies, clipboard text, files, and even **live CLI tool output**.
 
-[![Version](https://img.shields.io/badge/version-1.1.2-2563eb?style=flat-square)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-82%20passing-16a34a?style=flat-square)](#-development)
+[![npm](https://img.shields.io/npm/v/dsh-deslop?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/dsh-deslop)
+[![Tests](https://img.shields.io/badge/tests-90%20passing-16a34a?style=flat-square)](#-development)
 [![Rules](https://img.shields.io/badge/rules-50%20built--in-ea580c?style=flat-square)](#-rules)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-334155?style=flat-square)](package.json)
 
 **Author:** [Md. Shahriar Alam Shaon AKA 0xShahriar](https://github.com/0xshahriar)
+
+### Works with
+
+| Host | Link |
+|------|------|
+| **DeepSeek Harness** (engine, web UI, desktop) | [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) |
+| **dsh-android** (Kotlin APK, no root) | [jackwener/DSH-Android](https://github.com/jackwener/DSH-Android) |
+| **dsh-go** (Flutter phone app) | [ccch1mneyyy/dsh-Go](https://github.com/ccch1mneyyy/dsh-Go) |
 
 </div>
 
@@ -63,7 +71,7 @@ npm install dsh-deslop
 ```
 
 **As a DSH plugin.** Install by registry name — this is the form that works on
-every host, including dsh-android:
+every host:
 
 ```sh
 dsh plugin --profile web add dsh-deslop
@@ -75,11 +83,26 @@ Or point it at a local checkout while developing:
 dsh plugin --profile web add /path/to/dsh-deslop
 ```
 
-| Install form | Works on dsh-go | Works on dsh-android |
-|---|---|---|
-| `dsh-deslop` (npm name) | ✅ | ✅ |
-| `add /local/path` | ✅ | ✅ |
-| `add https://github.com/...` | ✅ | ❌ see [troubleshooting](TROUBLESHOOTING.md#bundlenull-from-a-github-or-tarball-url) |
+### Host compatibility
+
+`/deslop` works anywhere a DSH command registry exists. The dsh-go bridge adds
+native buttons on top; other hosts simply get the slash command and CLI.
+
+| Install form | dsh web | dsh-android | dsh-go |
+|---|:---:|:---:|:---:|
+| `dsh-deslop` (npm name) | ✅ | ✅ | ✅ |
+| `add /local/path` | ✅ | ✅ | ✅ |
+| `add https://github.com/...` | ✅ | ⚠️ needs the [engine patch](contrib/engine-patch/README.md) | ✅ |
+
+| Surface | dsh web | dsh-android | dsh-go |
+|---|:---:|:---:|:---:|
+| `/deslop` slash command | ✅ | ✅ | ✅ |
+| CLI (`dsh-deslop`, `dsh-deslop-exec`) | ✅ | ✅ | ✅ |
+| Composer pills, reply menu, panel, status strip | — | — | ✅ |
+
+> **dsh-android** and **dsh-go** run the same Node engine, so everything works
+> there too. The native *buttons* are a dsh-go bridge feature; dsh-android gets
+> the slash command, which is the part that matters interactively.
 
 > **Installing from a GitHub or tarball URL fails on strict hosts.**
 > `dsh-plugin-manager`'s `inspect()` returns a hardcoded `bundle: null` for git
@@ -143,12 +166,11 @@ untouched by default.
 
 ### 3️⃣ As a DSH plugin — slash command everywhere, buttons on dsh-go
 
-The plugin layers on whatever the host provides. It never assumes the
-dsh-go phone app.
+The plugin layers on whatever the host provides. It never assumes the phone app.
 
 | Surface | Where it appears | Action |
 |---------|------------------|--------|
-| `/deslop <text>` | **any DSH host** (web, desktop, CLI, ACP) | deslop text — supports `-a`, `-H`, `--rules` |
+| `/deslop <text>` | **any DSH host** — dsh web, dsh-android, dsh-go | deslop text — supports `-a`, `-H`, `--rules` |
 | Composer pill | dsh-go app only | deslop the draft in place |
 | Undo pill | dsh-go app only | restore the previous draft |
 | Reply long-press | dsh-go app only | deslop the reply · copy the clean version |

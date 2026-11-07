@@ -73,16 +73,26 @@ jobs:
 
       - name: Can we authenticate to npm?
         id: auth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           # Publishing needs either a token secret or npm trusted publishing
           # (OIDC) configured for this repo on npmjs.com. Without either, skip
           # instead of failing the whole workflow: a red X on every push to
           # main trains people to ignore CI.
-          if [ -n "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "method=token" >> "$GITHUB_OUTPUT"
-          else
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
             echo "method=none" >> "$GITHUB_OUTPUT"
             echo "::notice title=npm publish skipped::No NPM_TOKEN secret and no trusted publisher configured. Configure one to enable auto-publish - see TROUBLESHOOTING.md."
+            exit 0
+          fi
+          # A stale or revoked token would otherwise fail the publish step with
+          # an opaque 401/403. Verify identity first and say so plainly.
+          if npm whoami >/dev/null 2>&1; then
+            echo "method=token" >> "$GITHUB_OUTPUT"
+            echo "Token authenticated as $(npm whoami)."
+          else
+            echo "method=none" >> "$GITHUB_OUTPUT"
+            echo "::warning title=npm token rejected::NPM_TOKEN is set but npm rejected it (expired or revoked). Update the secret to re-enable publishing."
           fi
 
       - name: Publish (dry run)

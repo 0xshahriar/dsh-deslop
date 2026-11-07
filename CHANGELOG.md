@@ -3,6 +3,21 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.1.3] - 2026-11-07
+
+### Changed
+- README now lists the supported hosts with links: DeepSeek Harness (dsh web),
+  dsh-android, and dsh-go, with a per-host compatibility table for install
+  forms and surfaces.
+- dsh-android is documented as working (the earlier `bundle:null` blocker is
+  resolved), with the engine patch noted for URL installs.
+
+### Fixed
+- **npm publishing is now fully automatic.** The `NPM_TOKEN` repository secret
+  is configured, so pushing a version bump to `main` publishes to npm. The
+  workflow verifies the token with `npm whoami` first and reports a plain
+  warning if it has been revoked, instead of failing with an opaque 401.
+
 ## [1.1.2] - 2026-11-07
 
 ### Fixed
