@@ -1,0 +1,89 @@
+{
+  "name": "dsh-deslop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "description": "Remove AI slop from chat replies, clipboard text, and CLI tool output — slash command + dsh-go plugin + CLI.",
+  "author": "Md. Shahriar Alam Shaon AKA 0xShahriar",
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
+  },
+  "bin": {
+    "dsh-deslop": "./bin/dsh-deslop.js",
+    "dsh-deslop-exec": "./bin/dsh-deslop-exec.js"
+  },
+  "files": ["lib", "bin", "README.md", "CHANGELOG.md", "LICENSE"],
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "dshGo": {
+    "v": 1,
+    "title": "Deslop",
+    "icon": "sparkle",
+    "wants": ["clipboard", "draft", "message"],
+    "contributes": {
+      "composer.actions": [
+        {
+          "id": "deslop-draft",
+          "label": "Deslop",
+          "icon": "sparkle"
+        },
+        {
+          "id": "deslop-undo",
+          "label": "Undo",
+          "icon": "replay"
+        }
+      ],
+      "message.actions": [
+        {
+          "id": "deslop-msg",
+          "label": "Deslop reply",
+          "icon": "sparkle"
+        },
+        {
+          "id": "deslop-msg-copy",
+          "label": "Copy clean",
+          "icon": "copy"
+        }
+      ],
+      "composer.strip": [
+        { "id": "deslop-status", "icon": "sparkle", "text": "Deslop" }
+      ],
+      "panels": [
+        {
+          "id": "deslop-panel",
+          "title": "Deslop",
+          "icon": "sparkle",
+          "placement": ["session.tab", "features", "chat.panel"]
+        }
+      ],
+      "composer.tools": [
+        {
+          "id": "deslop-clip-tool",
+          "label": "De-clip",
+          "icon": "paste"
+        },
+        {
+          "id": "deslop-tool",
+          "label": "Deslop",
+          "icon": "sparkle",
+          "panel": "deslop-panel"
+        }
+      ],
+      "session.actions": [
+        {
+          "id": "deslop-session-export",
+          "label": "Export clean",
+          "icon": "download"
+        }
+      ]
+    }
+  }
+}

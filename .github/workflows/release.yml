@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run tests
+        run: node --test tests/
+
+      - name: Package source tarball
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git archive --format=tar.gz --prefix="dsh-deslop/" -o "dsh-deslop-${VERSION}.tar.gz" HEAD
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: "v1.0.0 — First stable release"
+          body: |
+            ## dsh-deslop v1.0.0
+
+            First stable release — remove AI slop from anything.
+
+            ### Highlights
+            - **50 built-in rules** (EN + ZH) · 3 modes (hard-only / normal / aggressive)
+            - **CLI**: pipes, files, `-i`, `--diff`, `--check`, `--json`
+            - **dsh-deslop exec**: deslop any CLI tool's output live
+            - **DSH plugin**: `/deslop` slash command, pills, undo, panel
+            - 82 tests, zero dependencies
+
+            **Install:**
+            ```sh
+            npm install -g github:0xshahriar/dsh-deslop
+            ```
+          files: dsh-deslop-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
