@@ -13,7 +13,7 @@ import { deslop, summarize, MODES } from '../lib/engine.js'
 import { RULES } from '../lib/rules.js'
 import { loadSettings, saveSettings, SETTINGS_FILE } from '../lib/settings.js'
 
-const VERSION = '1.0.1'
+const VERSION = '1.0.2'
 
 function usage() {
   console.log(`dsh-deslop v${VERSION} — remove AI slop from text

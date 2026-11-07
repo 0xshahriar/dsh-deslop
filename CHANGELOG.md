@@ -3,6 +3,18 @@
 All notable changes to dsh-deslop are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.0.2] - 2026-11-07
+
+### Documented
+- Installing from a GitHub URL fails on strict hosts (dsh-android) with
+  `Failed to parse literal 'null' as a boolean value at path: $.bundle`.
+  The `null` comes from DSH itself: `dsh-plugin-manager`'s `inspect()` returns
+  a hardcoded `bundle: null` for git and tarball specs, because it never reads
+  the package manifest for those spec kinds. Registry names and local paths go
+  through `inspectionOf()`, which yields a real boolean. Our manifest is
+  correct (`dsh.bundle` is a non-null object, so `bundle` resolves to `true`).
+  README now states this and points at the two working install forms.
+
 ## [1.0.1] - 2026-11-07
 
 ### Fixed

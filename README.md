@@ -8,7 +8,7 @@ Em-dashes · "Great question!" · "Hope this helps!" · 🚀 decorations · form
 openers and buzzwords — the tells that scream *"a language model wrote this"* —
 cleaned from chat replies, clipboard text, files, and even **live CLI tool output**.
 
-[![Version](https://img.shields.io/badge/version-1.0.1-2563eb?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.2-2563eb?style=flat-square)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-82%20passing-16a34a?style=flat-square)](#-development)
 [![Rules](https://img.shields.io/badge/rules-50%20built--in-ea580c?style=flat-square)](#-rules)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -59,6 +59,15 @@ npx github:0xshahriar/dsh-deslop --help
 # As a DSH plugin
 dsh plugin --profile web add /path/to/dsh-deslop
 ```
+
+> **Installing from a GitHub URL is not supported by DSH's inspector.** When
+> the spec is a git address or a tarball, DSH reports `bundle: null` for it —
+> a hardcoded value in `dsh-plugin-manager` (`inspect()`, the `git` and
+> `tarball` branches), because only a registry lookup or a local path reads the
+> package manifest. Strict hosts such as dsh-android reject that `null` with
+> `Failed to parse literal 'null' as a boolean value at path: $.bundle`.
+> Use a **local path** (`dsh plugin add /path/to/dsh-deslop`) or an **npm
+> registry spec** instead.
 
 ---
 
